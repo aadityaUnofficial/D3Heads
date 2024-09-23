@@ -1,0 +1,1 @@
+insert into albums(album_title,album_artists,release_date,genre,label,artwork_url) values ("UNKNOWN", "UNKNOWN", "01-01-2000","Untitled","N.A.","artWork");
