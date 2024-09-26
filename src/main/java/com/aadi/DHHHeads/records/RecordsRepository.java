@@ -20,6 +20,8 @@ public class RecordsRepository {
 
     /*
     Start with normal CRUD 23-09-2024
+    23-09-2024 GetAll and Create Done
+    24-09-2024 is GetByFields Update Delete
      */
 
     public void createNewRecord(Record record){
@@ -37,5 +39,64 @@ public class RecordsRepository {
         return jdbcClient.sql("select * from records")
                 .query(Record.class)
                 .list();
+    }
+
+    public List<Record> getAllRecordsByTitle(String title){
+        log.debug("Inside getAllRecordsByTitle " + title);
+        return jdbcClient.sql("select * from records where LOWER(TRIM(title)) = LOWER(TRIM(:title))")
+                .param("title",title)
+                .query(Record.class)
+                .list();
+
+    }
+
+    public List<Record> getAllRecordsByAlbum(String album){
+        log.debug("Inside getAllRecordsByAlbum " + album);
+        return jdbcClient.sql("select * from records where LOWER(TRIM(album)) = LOWER(TRIM(:album))")
+                .param("album",album)
+                .query(Record.class)
+                .list();
+
+    }
+
+    public List<Record> getAllRecordsByArtist(String artist){
+        log.debug("Inside getAllRecordsByAlbum " + artist);
+        return jdbcClient.sql("select * from records where LOWER(TRIM(artist)) = LOWER(TRIM(:artist))")
+                .param("artist",artist)
+                .query(Record.class)
+                .list();
+
+    }
+
+    public List<Record> getAllRecordsByAlbumId(Integer albumId){
+        List<Record> recordsWithSameAlbumId = jdbcClient.sql("Select * from Records where album_id = :albumId")
+                .param("albumId", albumId)
+                .query(Record.class)
+                .list();
+        return recordsWithSameAlbumId;
+    }
+
+    public int updateRecords(Record record){
+        //title, artist, album, producer lyricist
+        log.debug("Update " + record);
+        int rs = 0;
+        try {
+            rs = jdbcClient.sql("UPDATE records set album = ?, artist = ?, title = ?, producer = ? , lyricist = ?  where album_id = ? and track_num = ?")
+                    .params(List.of(record.album(), record.artist(), record.title(), record.producer(), record.lyricist(), record.album_id(), record.track_num()))
+                    .update();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        List<Record> allRecords = getAllRecords();
+        log.debug(allRecords+"");
+        log.debug("Update " + rs);
+        return rs;
+    }
+
+    public void deleteRecord(Integer albumId, Integer trackNum){
+        int rs = jdbcClient.sql("DELETE from records where album_id = ? and track_num = ?").params(List.of(albumId, trackNum)).update();
+        log.debug("Deleted " + rs);
+
     }
 }

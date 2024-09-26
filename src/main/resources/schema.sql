@@ -28,14 +28,16 @@ CREATE TABLE IF NOT EXISTS records (
 
 CREATE TABLE IF NOT EXISTS artists (
     artist_id SERIAL PRIMARY KEY,
-    stage_name varchar(30) NOT NULL,
+    artist_name varchar(30) NOT NULL,
     genre varchar(30),
     bio varchar(300),
     image varchar(30),
     dob date NOT NULL,
     pob varchar(30),
     url varchar(30),
-    signed_to varchar(50),
-    award varchar(40),
-    influences varchar(100)
+    awards varchar(40),
+    influences varchar(100),
+    label varchar(50),
+    socials varchar(50),
+    version int
 );
